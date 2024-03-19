@@ -201,7 +201,7 @@ function displayWorksModal() {
         imageModal.setAttribute("class", "imageModal")
         galerieModal.appendChild(figureModal);
         figureModal.appendChild(imageModal);
-        const corbeille = `<i class="fa-solid fa-trash" id ="trash-${work.id}"></i>`
+        const corbeille = `<i class="fa-solid fa-trash-can" id ="trash-${work.id}"></i>`
         figureModal.insertAdjacentHTML("afterbegin", corbeille)
         const trashSelected = document.getElementById(`trash-${work.id}`)
         trashSelected.addEventListener("click", () => deleteWorksModal(work.id))
