@@ -468,7 +468,7 @@ input {
 
 .bordure {
 	border: solid 1px #B3B3B3;
-	margin-top: 100px;
+	margin: 140px 80px 40px;
 }
 
 .ajoutphoto {
@@ -489,4 +489,268 @@ input {
 	width: 76px;
 	height: 102px;
 }
-.figureModal {}
+
+/* seb */
+/* .login{
+	font-weight: 600;
+}
+.formulary-login {
+	width: 50%;
+	margin: auto;
+	margin-top: 150px;
+	margin-bottom: 355px;
+}
+
+.formulary-login h2{
+	text-align: center;
+}
+
+.identifier-form {
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	margin-top: 7px;
+	
+}
+
+.identifier-form label {
+	margin-bottom: 7px;
+	margin-top: 30px;
+}
+
+.identifier-form input{
+	height: 50px;
+	font-size: 1.2rem;
+	box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.09);
+	border: none;
+}
+.identifier-form #submit {
+	height: 36px;
+	font-size: 14px;
+	margin-top: 37px;
+}
+
+.formulary-login p {
+	text-align: center;
+	color: #3D3D3D;
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration-line: underline;
+	cursor: pointer;
+	
+}
+
+.submit-disabled {
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: rgb(168, 168, 168);
+	margin : 2em auto ;
+	width: 180px;
+	text-align: center;
+	border-radius: 60px ;
+}
+
+.error-mail {
+	color: red;
+	font-weight: 700;
+	margin-top: 6px;
+	display: none;
+}
+
+.error-password {
+	color: red;
+	font-weight: 700;
+	margin-top: 6px;
+	display: none;
+}*/
+
+.modal-content {
+	background-color: #fff;
+	width: 630px;
+	max-height: calc(100vh - 20px);
+	overflow: auto;
+	border-radius: 10px;
+}
+
+.close {
+	display: flex;
+	justify-content: end;
+}
+.close-deleted, .close-add {
+	cursor: pointer;
+	font-size: 24px;
+	margin-top: 26px;
+	margin-right: 30px;
+	
+}
+
+.title-modal {
+	text-align: center;
+	color: #000;
+	font-family: "work sans";
+	font-size: 26px;
+	font-weight: 400;
+	margin-top: 10px;
+}
+
+.gallery-list {
+	padding-bottom: 67px;
+	border-bottom: 1px solid #b3b3b3;
+	margin-right: 100px;
+	margin-left: 100px;
+	margin-top: 46px;
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 25px 5px;
+}
+
+.add-photo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 45px;
+	margin-top: 38px;
+	margin-right: auto;
+	margin-left: auto;
+	border: none;
+	width: 237px;
+	height: 36px;
+	border-radius: 60px;
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	cursor: pointer;
+}
+
+.modal-img {
+	width: 78px;
+	height: 104px;
+	object-fit: cover;
+}
+
+.cute-gallery {
+	position: relative;
+}
+
+.delete-work{
+	position: absolute;
+	right: 6px;
+	top: 6px;
+	color: #fff;
+	background-color: #000;
+	padding: 3px 4px;
+	font-size: 9px;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.message-deleted {
+	color: red;
+	display: none;
+	justify-content: center;
+	margin-top: 10px;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.modal-add {
+	display: none;
+	flex-direction: column;
+	height: 670px;
+}
+
+.return-and-close {
+	display: flex;
+	justify-content: space-between;
+}
+
+.return {
+	margin-top: 26px;
+	margin-left: 30px;
+	font-size: 24px;
+	cursor: pointer;
+}
+
+.form-photo{
+	display: flex;
+	flex-direction: column;
+	margin: 0 105px;
+}
+
+.add-new-photo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #e8f1f6;
+	width: 420px;
+	height: 169px;
+	margin-top: 36px;
+	margin-bottom: 9px;
+}
+
+.content-add-photo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.picture {
+	font-size: 76px;
+	color: #b9c5cc;
+}
+
+.btn-add-new-photo {
+	background-color: #b9c5cc;
+	color: #306685;
+	padding: 10px 33px;
+	margin-top: 6px;
+	border-radius: 50px;
+	cursor: pointer;
+	transition: transform;
+}
+
+.btn-add-new-photo:hover {
+	transform: scale(1.1);
+}
+
+#file {
+	visibility: hidden;
+}
+
+.type-file {
+	font-size: 10px;
+	color: #444;
+	margin-bottom: 6px;
+	margin-top:-13px ;
+}
+
+.title-categorie{
+	color: #3D3D3D;
+	margin-top: 25px;
+	padding-bottom: 47px;
+	border-bottom: 1px solid #b3b3b3;
+}
+
+#title-photo, #categorie-photo {
+	width: 420px;
+	height: 51px;
+	border: none;
+	box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.09);
+	margin-top: 10px;
+	font-size: 1.2rem;
+	color: #444444;
+}
+
+#title-photo {
+	margin-bottom: 21px;
+}
+
+ #btn-valid {
+	width: 237px;
+	height: 36px;
+	border: none;
+	margin-top: 32px;
+	margin-bottom: 45px;
+}
+

@@ -1,5 +1,13 @@
 const galleryElement = document.querySelector(".gallery")
-
+const titleAddModal = document.getElementById("title-photo")
+const categorieAddModal = document.getElementById("categorie-photo")
+const btnAddFile = document.getElementById("file")
+const contentAddPhoto = document.querySelector(".content-add-photo")
+const previewNewPhoto = document.querySelector(".preview")
+const focusableSelector = 'button, a, input, textarea'
+const btnValidAddModal = document.getElementById("btn-valid")
+let focusables = []
+let modal = null
 async function fetchData(url) {
     try {
         const response = await fetch(url);
@@ -74,7 +82,7 @@ async function loadData() {
     await createFilter();
     await adminMode();
 }
-loadData();
+
 
 // bandeau noir
 
@@ -121,9 +129,6 @@ function adminMode() {
 
 // les Modals
 
-let modal = null
-const focusableSelector = 'button, a, input, textarea'
-let focusables = []
 
 const openModal = function (e) {
     e.preventDefault()
@@ -137,11 +142,10 @@ const openModal = function (e) {
     modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
     displayWorksModal()
+    openAddModal()
 }
 
 const closeModal = function () {
-    // if (modal === null) return
-    // e.preventDefault()
     modal.style.display = "none";
     modal.setAttribute('aria-hidden', 'true')
     modal.setAttribute('aria-modal', 'false')
@@ -226,8 +230,118 @@ async function deleteWorksModal(id) {
         }
 
     }
- catch (error) {
-    alert("Erreur : " + error)
-} 
- 
+    catch (error) {
+        alert("Erreur : " + error)
+    }
+
 }
+loadData();
+
+
+// créer une modal ajout photos
+
+const openAddModal = function () {
+    const ajoutPhoto = document.querySelector(".ajoutphoto")
+    const modalUn = document.querySelector("#titlemodal")
+    const galerieModal = document.querySelector(".galerieModal")
+    const bordure = document.querySelector(".bordure")
+    ajoutPhoto.addEventListener("click", () => {
+        console.log("hello")
+        modalUn.textContent = 'Ajout photo'
+
+        const formulaire = `
+        <form class="form-photo" action="#" method="post">
+                <div class="add-new-photo">
+                    <div class="content-add-photo">
+                        <i class="picture fa-regular fa-image"></i>
+                        <label class="btn-add-new-photo" for="file">+ Ajouter photo</label>
+                        <input
+                            id="file"
+                            type="file"
+                            name="file"
+                            accept="image/png, image/jpeg">
+                        <p class="type-file">jpg, png : 4mo max</p>
+                    </div>
+                    <div class="preview"></div>
+                </div>
+                <div class="title-categorie">
+                    <label for="title-photo">Titre</label>
+                    <input type="text" id="title-photo" name="title-photo" required>
+                    <label for="categorie-photo">Catégorie</label>
+                    <select id="categorie-photo" name="categorie-photo" required>
+                        <option value="">--Choisissez une catégorie--</option>
+                    </select>
+                </div>
+                <input type="submit" id="btn-valid" value="Valider">
+            </form>`
+        galerieModal.innerHTML = formulaire
+        ajoutPhoto.remove()
+        bordure.remove()
+    })
+}
+
+// *Function to get a photo */
+function getNewPhoto () {
+    /**Constant to retrieve the first selected file, "this" refers to the btn "input type: file" */
+    const selectedNewPhoto = this.files[0];
+     /**Required size, 4mo */
+    const sizeFileMax = 4 * 1024 * 1024;
+    /**Required type */
+    const typeFile = ["image/jpeg", "image/png"];
+    /**Checking the photo size */
+    if(selectedNewPhoto.size > sizeFileMax){
+        alert("Votre fichier dépasse 4 mo.")
+        /**Checking the photo type */    
+    } else if(!typeFile.includes(selectedNewPhoto.type)){
+        alert("Votre fichier n'est pas au bon format.")
+    } else {   
+        /**Hide photo content */ 
+        contentAddPhoto.style.display = "none";
+        /**Creating a new image */
+        let newPhoto = document.createElement("img");
+        /**Adding the source of the photo using the URL created for it */
+        newPhoto.src = URL.createObjectURL(selectedNewPhoto);
+        /**Add a class and changing the size to fit in the parent container */
+        newPhoto.classList.add("new-photo");
+        newPhoto.style.height = "169px";
+        /**Adding the new image to the <div> previewNewPhoto */
+        previewNewPhoto.appendChild(newPhoto);
+        newPhoto.addEventListener("click", () => {
+            /**Change photos by clicking on it */
+            btnAddFile.click();
+            /**Calling the function that resets the photo addition modal */
+            // resetAddModal();
+        });
+    };
+};
+
+
+
+
+function setBtnState(disabled) { 
+    btnValidAddModal.disabled = disabled;
+    btnValidAddModal.style.cursor = disabled ? "not-allowed" : "pointer";
+    btnValidAddModal.style.backgroundColor = disabled ? "grey" : "#1D6154";
+};
+
+// setBtnState(true);
+
+function toggleSubmitBtn() {
+    const photoAdded = document.querySelector(".new-photo");
+
+    /**Checks if the title, category, and photo meet the conditions to activate the button */
+    if (!(titleAddModal.value && categorieAddModal.value && photoAdded !== null)) {
+        /**Leave the button disabled */
+        setBtnState(true);
+    } else {
+        /*Activates the button if all conditions are met */
+        setBtnState(false);
+    };
+  
+};
+btnAddFile.addEventListener("change", getNewPhoto);
+titleAddModal.addEventListener("input", toggleSubmitBtn);
+categorieAddModal.addEventListener("input", toggleSubmitBtn);
+btnAddFile.addEventListener("change", toggleSubmitBtn);
+
+
