@@ -291,7 +291,8 @@ footer nav ul {
 	margin: 2em
 }
 
-/* My style */
+/* boutons de catégories */
+
 .category-btn {
 	border: 1px solid #1D6154;
 	border-radius: 30px;
@@ -314,7 +315,8 @@ footer nav ul {
 	color: aliceblue;
 }
 
-/******* login *******/
+/*** login ***/
+
 .logo {
 	text-decoration: none;
 	padding-top: 5px;
@@ -388,6 +390,7 @@ input {
 	right: 145px;
 }
 
+/* gestion des erreurs email et mot de passe */
 
 .loginEmail-error {
 	display: none;
@@ -401,7 +404,7 @@ input {
 	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-/******* modal*******/
+/*** La modal de supp photo ***/
 * {
 	box-sizing: border-box;
 }
@@ -451,8 +454,13 @@ input {
 }
 
 .close-deleted {
-	position: relative;
-	left: 550px;
+	display: flex;
+	justify-content: end;
+	margin-top: 26px;
+	margin-left: 30px;
+	font-size: 24px;
+	cursor: pointer;
+	
 }
 
 .fa-trash-can {
@@ -488,101 +496,6 @@ input {
 .imageModal {
 	width: 76px;
 	height: 102px;
-}
-
-/* seb */
-/* .login{
-	font-weight: 600;
-}
-.formulary-login {
-	width: 50%;
-	margin: auto;
-	margin-top: 150px;
-	margin-bottom: 355px;
-}
-
-.formulary-login h2{
-	text-align: center;
-}
-
-.identifier-form {
-	text-align: left;
-	display: flex;
-	flex-direction: column;
-	margin-top: 7px;
-	
-}
-
-.identifier-form label {
-	margin-bottom: 7px;
-	margin-top: 30px;
-}
-
-.identifier-form input{
-	height: 50px;
-	font-size: 1.2rem;
-	box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.09);
-	border: none;
-}
-.identifier-form #submit {
-	height: 36px;
-	font-size: 14px;
-	margin-top: 37px;
-}
-
-.formulary-login p {
-	text-align: center;
-	color: #3D3D3D;
-	font-size: 14px;
-	font-weight: 500;
-	text-decoration-line: underline;
-	cursor: pointer;
-	
-}
-
-.submit-disabled {
-	font-family: 'Syne';
-	font-weight: 700;
-	color: white;
-	background-color: rgb(168, 168, 168);
-	margin : 2em auto ;
-	width: 180px;
-	text-align: center;
-	border-radius: 60px ;
-}
-
-.error-mail {
-	color: red;
-	font-weight: 700;
-	margin-top: 6px;
-	display: none;
-}
-
-.error-password {
-	color: red;
-	font-weight: 700;
-	margin-top: 6px;
-	display: none;
-}*/
-
-.modal-content {
-	background-color: #fff;
-	width: 630px;
-	max-height: calc(100vh - 20px);
-	overflow: auto;
-	border-radius: 10px;
-}
-
-.close {
-	display: flex;
-	justify-content: end;
-}
-.close-deleted, .close-add {
-	cursor: pointer;
-	font-size: 24px;
-	margin-top: 26px;
-	margin-right: 30px;
-	
 }
 
 .title-modal {
@@ -655,17 +568,19 @@ input {
 	font-weight: 700;
 }
 
+/* La modal Ajout photo */
+
 .modal-add {
 	display: none;
 	flex-direction: column;
 	height: 670px;
 }
 
-.return-and-close {
+.js-modal-close {
 	display: flex;
-	justify-content: space-between;
-}
+	justify-content: end;
 
+}
 .return {
 	margin-top: 26px;
 	margin-left: 30px;
@@ -715,14 +630,14 @@ input {
 }
 
 #file {
-	visibility: hidden;
+		display: none;
 }
 
 .type-file {
 	font-size: 10px;
 	color: #444;
 	margin-bottom: 6px;
-	margin-top:-13px ;
+	margin-top:5px ;
 }
 
 .title-categorie{

@@ -1,6 +1,5 @@
 const email = document.getElementById("email");
 const password = document.getElementById("password");
-
 const submit = document.getElementById("submit");
 const form = document.querySelector(".login-form");
 const errorMail = document.querySelector(".loginEmail-error")

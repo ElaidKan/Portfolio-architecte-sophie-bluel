@@ -1,11 +1,15 @@
 const galleryElement = document.querySelector(".gallery")
-const titleAddModal = document.getElementById("title-photo")
-const categorieAddModal = document.getElementById("categorie-photo")
-const btnAddFile = document.getElementById("file")
+const photoAdded = document.querySelector(".new-photo");
+const ajoutPhoto = document.querySelector(".ajoutphoto")
+const modalUn = document.querySelector("#titlemodal")
+// AJOUT DE CONSTANTE POUR MODAL 1 ET 2
+const galerieModal = document.querySelector(".galerieModal")
+const returnAndClose = document.querySelector(".js-modal-close")
+const returnIcon= document.querySelector(".return")
+const bordure = document.querySelector(".bordure")
 const contentAddPhoto = document.querySelector(".content-add-photo")
 const previewNewPhoto = document.querySelector(".preview")
 const focusableSelector = 'button, a, input, textarea'
-const btnValidAddModal = document.getElementById("btn-valid")
 let focusables = []
 let modal = null
 async function fetchData(url) {
@@ -132,6 +136,11 @@ function adminMode() {
 
 const openModal = function (e) {
     e.preventDefault()
+    ajoutPhoto.style.display = "block"
+    bordure.style.display = "block"
+    // masque icon retour dans modal 1
+    returnIcon.style.display ="none"
+
     modal = document.querySelector(".modal")
     focusables = Array.from(modal.querySelectorAll(focusableSelector))
     focusables[0].focus()
@@ -139,7 +148,8 @@ const openModal = function (e) {
     modal.removeAttribute('aria-hidden')
     modal.setAttribute('aria-modal', 'true')
     modal.addEventListener('click', closeModal)
-    modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
+    // modif de la class pour fermeture juste icon et pa sa div entiere
+    modal.querySelector('.close-deleted').addEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
     displayWorksModal()
     openAddModal()
@@ -150,7 +160,8 @@ const closeModal = function () {
     modal.setAttribute('aria-hidden', 'true')
     modal.setAttribute('aria-modal', 'false')
     modal.removeEventListener('click', closeModal)
-    modal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
+    // MODIF DE LA CLASS POUR FERMETURE, JUSTE ICONE ET PASA DIV ENTIERE
+    modal.querySelector('.close-deleted').removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
     modal = null
 }
@@ -241,12 +252,11 @@ loadData();
 // créer une modal ajout photos
 
 const openAddModal = function () {
-    const ajoutPhoto = document.querySelector(".ajoutphoto")
-    const modalUn = document.querySelector("#titlemodal")
-    const galerieModal = document.querySelector(".galerieModal")
-    const bordure = document.querySelector(".bordure")
+
     ajoutPhoto.addEventListener("click", () => {
-        console.log("hello")
+        // APPARITION ICON RETOUR POUR MODAL 2
+        returnIcon.style.display = "flex"
+        returnAndClose.style.justifyContent = "space-between"
         modalUn.textContent = 'Ajout photo'
 
         const formulaire = `
@@ -275,73 +285,80 @@ const openAddModal = function () {
                 <input type="submit" id="btn-valid" value="Valider">
             </form>`
         galerieModal.innerHTML = formulaire
-        ajoutPhoto.remove()
-        bordure.remove()
+        ajoutPhoto.style.display = "none"
+        bordure.style.display = "none"
+
+            // CONSTANTE A GARDER ICI POUR POUVOIR LES EXPLOITER
+            // POUR DESACTIVER LE BTN
+        const titleAddModal = document.getElementById("title-photo")
+        const categorieAddModal = document.getElementById("categorie-photo")
+        const btnAddFile = document.getElementById("file")
+
+        function setBtnState(disabled) {
+                const btnValidAddModal = document.getElementById("btn-valid")
+
+                btnValidAddModal.disabled = disabled;
+                btnValidAddModal.style.cursor = disabled ? "not-allowed" : "pointer";
+                btnValidAddModal.style.backgroundColor = disabled ? "grey" : "#1D6154";
+        };
+        
+        setBtnState(true);
+        
+        function toggleSubmitBtn() {
+            const titleAddModal = document.getElementById("title-photo")
+            const categorieAddModal = document.getElementById("categorie-photo")
+            const btnAddFile = document.getElementById("file")
+            
+            /**Checks if the title, category, and photo meet the conditions to activate the button */
+            if (!(titleAddModal.value && categorieAddModal.value && photoAdded !== null)) {
+                /**Leave the button disabled */
+                setBtnState(true);
+            } else {
+                /*Activates the button if all conditions are met */
+                setBtnState(false);
+            };
+          
+        };
+
+        // ECOUTEUR QUI SURVEILLE LES INPUTS ET L IMAGE
+        // ET APPEL FONCTION POUR VERIF SI VIDE OU NON
+        titleAddModal.addEventListener("input", toggleSubmitBtn);
+        categorieAddModal.addEventListener("input", toggleSubmitBtn);
+        btnAddFile.addEventListener("change", toggleSubmitBtn);
+
+        // APPEL DE LA FONCTION POUR POUVOIR METTRE ET CHANGER DE PHOTO
+        btnAddFile.addEventListener("change", getNewPhoto);
+
     })
 }
 
-// *Function to get a photo */
-function getNewPhoto () {
-    /**Constant to retrieve the first selected file, "this" refers to the btn "input type: file" */
-    const selectedNewPhoto = this.files[0];
-     /**Required size, 4mo */
+
+function getNewPhoto() {
+    const btnAddFile = document.getElementById("file")
+    const contentAddPhoto = document.querySelector(".content-add-photo")
+    const previewNewPhoto = document.querySelector(".preview")
+
+    const selectedNewPhoto = btnAddFile.files[0];
     const sizeFileMax = 4 * 1024 * 1024;
-    /**Required type */
     const typeFile = ["image/jpeg", "image/png"];
-    /**Checking the photo size */
-    if(selectedNewPhoto.size > sizeFileMax){
-        alert("Votre fichier dépasse 4 mo.")
-        /**Checking the photo type */    
-    } else if(!typeFile.includes(selectedNewPhoto.type)){
-        alert("Votre fichier n'est pas au bon format.")
-    } else {   
-        /**Hide photo content */ 
+
+    if (selectedNewPhoto.size > sizeFileMax) {
+        alert("Votre fichier dépasse 4 Mo.");
+    } else if (!typeFile.includes(selectedNewPhoto.type)) {
+        alert("Votre fichier n'est pas au bon format.");
+    } else {
         contentAddPhoto.style.display = "none";
-        /**Creating a new image */
         let newPhoto = document.createElement("img");
-        /**Adding the source of the photo using the URL created for it */
         newPhoto.src = URL.createObjectURL(selectedNewPhoto);
-        /**Add a class and changing the size to fit in the parent container */
         newPhoto.classList.add("new-photo");
         newPhoto.style.height = "169px";
-        /**Adding the new image to the <div> previewNewPhoto */
         previewNewPhoto.appendChild(newPhoto);
         newPhoto.addEventListener("click", () => {
-            /**Change photos by clicking on it */
             btnAddFile.click();
-            /**Calling the function that resets the photo addition modal */
-            // resetAddModal();
         });
-    };
+    }
 };
 
 
-
-
-function setBtnState(disabled) { 
-    btnValidAddModal.disabled = disabled;
-    btnValidAddModal.style.cursor = disabled ? "not-allowed" : "pointer";
-    btnValidAddModal.style.backgroundColor = disabled ? "grey" : "#1D6154";
-};
-
-// setBtnState(true);
-
-function toggleSubmitBtn() {
-    const photoAdded = document.querySelector(".new-photo");
-
-    /**Checks if the title, category, and photo meet the conditions to activate the button */
-    if (!(titleAddModal.value && categorieAddModal.value && photoAdded !== null)) {
-        /**Leave the button disabled */
-        setBtnState(true);
-    } else {
-        /*Activates the button if all conditions are met */
-        setBtnState(false);
-    };
-  
-};
-btnAddFile.addEventListener("change", getNewPhoto);
-titleAddModal.addEventListener("input", toggleSubmitBtn);
-categorieAddModal.addEventListener("input", toggleSubmitBtn);
-btnAddFile.addEventListener("change", toggleSubmitBtn);
 
 
