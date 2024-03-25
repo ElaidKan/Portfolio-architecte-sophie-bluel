@@ -3,15 +3,18 @@ const photoAdded = document.querySelector(".new-photo");
 const ajoutPhoto = document.querySelector(".ajoutphoto")
 const modalUn = document.querySelector("#titlemodal")
 // AJOUT DE CONSTANTE POUR MODAL 1 ET 2
+const closeIcon = document.querySelector(".js-modal-close")
 const galerieModal = document.querySelector(".galerieModal")
 const returnAndClose = document.querySelector(".js-modal-close")
-const returnIcon= document.querySelector(".return")
+const returnIcon = document.querySelector(".return")
 const bordure = document.querySelector(".bordure")
 const contentAddPhoto = document.querySelector(".content-add-photo")
 const previewNewPhoto = document.querySelector(".preview")
 const focusableSelector = 'button, a, input, textarea'
 let focusables = []
 let modal = null
+
+
 async function fetchData(url) {
     try {
         const response = await fetch(url);
@@ -43,7 +46,6 @@ async function createGallery(categoryId = null) {
         figure.appendChild(titleImage);
     });
 }
-
 
 
 async function createFilter() {
@@ -85,6 +87,7 @@ async function loadData() {
     categories = await fetchData("http://localhost:5678/api/categories");
     await createFilter();
     await adminMode();
+
 }
 
 
@@ -138,8 +141,9 @@ const openModal = function (e) {
     e.preventDefault()
     ajoutPhoto.style.display = "block"
     bordure.style.display = "block"
-    // masque icon retour dans modal 1
-    returnIcon.style.display ="none"
+    // MASQUE ICON RETOUR DANS MODAL 1
+    closeIcon.style.justifyContent = "end"
+    returnIcon.style.display = "none"
 
     modal = document.querySelector(".modal")
     focusables = Array.from(modal.querySelectorAll(focusableSelector))
@@ -148,7 +152,7 @@ const openModal = function (e) {
     modal.removeAttribute('aria-hidden')
     modal.setAttribute('aria-modal', 'true')
     modal.addEventListener('click', closeModal)
-    // modif de la class pour fermeture juste icon et pa sa div entiere
+    // MODIF DE LA CLASS POUR FERMETURE, JUSTE ICONE ET PASA DIV ENTIERE
     modal.querySelector('.close-deleted').addEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
     displayWorksModal()
@@ -164,6 +168,7 @@ const closeModal = function () {
     modal.querySelector('.close-deleted').removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
     modal = null
+
 }
 
 const stopPropagation = function (e) {
@@ -222,6 +227,7 @@ function displayWorksModal() {
         trashSelected.addEventListener("click", () => deleteWorksModal(work.id))
     });
 }
+
 async function deleteWorksModal(id) {
     try {
         const response = await fetch(`http://localhost:5678/api/works/${id}`, {
@@ -252,6 +258,7 @@ loadData();
 // créer une modal ajout photos
 
 const openAddModal = function () {
+
 
     ajoutPhoto.addEventListener("click", () => {
         // APPARITION ICON RETOUR POUR MODAL 2
@@ -288,27 +295,31 @@ const openAddModal = function () {
         ajoutPhoto.style.display = "none"
         bordure.style.display = "none"
 
-            // CONSTANTE A GARDER ICI POUR POUVOIR LES EXPLOITER
-            // POUR DESACTIVER LE BTN
+        //FCT APPEL CATEGORIES
+        addSelectedCategories()
+
+        // CONSTANTE A GARDER ICI POUR POUVOIR LES EXPLOITER
+        // POUR DESACTIVER LE BTN
         const titleAddModal = document.getElementById("title-photo")
         const categorieAddModal = document.getElementById("categorie-photo")
         const btnAddFile = document.getElementById("file")
 
         function setBtnState(disabled) {
-                const btnValidAddModal = document.getElementById("btn-valid")
+            const btnValidAddModal = document.getElementById("btn-valid")
 
-                btnValidAddModal.disabled = disabled;
-                btnValidAddModal.style.cursor = disabled ? "not-allowed" : "pointer";
-                btnValidAddModal.style.backgroundColor = disabled ? "grey" : "#1D6154";
+            btnValidAddModal.disabled = disabled;
+            btnValidAddModal.style.cursor = disabled ? "not-allowed" : "pointer";
+            btnValidAddModal.style.backgroundColor = disabled ? "grey" : "#1D6154";
         };
-        
+
         setBtnState(true);
-        
+
         function toggleSubmitBtn() {
             const titleAddModal = document.getElementById("title-photo")
             const categorieAddModal = document.getElementById("categorie-photo")
-            const btnAddFile = document.getElementById("file")
-            
+            const photoAdded = document.querySelector(".new-photo");
+
+
             /**Checks if the title, category, and photo meet the conditions to activate the button */
             if (!(titleAddModal.value && categorieAddModal.value && photoAdded !== null)) {
                 /**Leave the button disabled */
@@ -317,8 +328,9 @@ const openAddModal = function () {
                 /*Activates the button if all conditions are met */
                 setBtnState(false);
             };
-          
+
         };
+
 
         // ECOUTEUR QUI SURVEILLE LES INPUTS ET L IMAGE
         // ET APPEL FONCTION POUR VERIF SI VIDE OU NON
@@ -329,8 +341,32 @@ const openAddModal = function () {
         // APPEL DE LA FONCTION POUR POUVOIR METTRE ET CHANGER DE PHOTO
         btnAddFile.addEventListener("change", getNewPhoto);
 
+
     })
+
+    //NE FONCTIONNE PAS A CAUSE DU PREVENT DEFAULT DANS OPENMODAL()
+    // returnAndClose.addEventListener("click", () =>{
+    //     openModal ()
+
+    // })
 }
+
+
+
+//AJOUT DES CATEGORIES
+function addSelectedCategories() {
+    categories.shift();
+    const categorieAddModal = document.getElementById("categorie-photo")
+
+    categories.forEach(category => {
+        const categoryWork = document.createElement("option");
+        categoryWork.setAttribute("value", category.id);
+        categoryWork.setAttribute("name", category.name);
+        categoryWork.innerText = category.name;
+        categorieAddModal.appendChild(categoryWork);
+    });
+};
+
 
 
 function getNewPhoto() {
@@ -358,7 +394,3 @@ function getNewPhoto() {
         });
     }
 };
-
-
-
-

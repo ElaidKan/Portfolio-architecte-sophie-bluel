@@ -422,10 +422,12 @@ input {
 }
 
 .modal-wrapper {
+	/* scroll barre auto */
 	overflow: auto;
 	width: 630px;
 	height: 688px;
 	padding: 20px;
+	/* max-W & max-H 1x la taille de l'ecran moins 20px */
 	max-width: calc(100vw - 20px);
 	max-height: calc(100vh - 20px);
 	background-color: #FFF;
