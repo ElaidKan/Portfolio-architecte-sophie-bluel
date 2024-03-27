@@ -1,3 +1,6 @@
+// ***Déclaration des variables globales***
+let focusables = []
+let modal = null
 const galleryElement = document.querySelector(".gallery")
 const photoAdded = document.querySelector(".new-photo");
 const ajoutPhoto = document.querySelector(".ajoutphoto")
@@ -11,8 +14,6 @@ const bordure = document.querySelector(".bordure")
 const contentAddPhoto = document.querySelector(".content-add-photo")
 const previewNewPhoto = document.querySelector(".preview")
 const focusableSelector = 'button, a, input, textarea'
-let focusables = []
-let modal = null
 
 
 async function fetchData(url) {
@@ -27,45 +28,70 @@ async function fetchData(url) {
     }
 }
 
+// Fonction SUPPRIMER les anciennes images HTML***
 function deleteOldGallery() {
     document.querySelector(".gallery").innerHTML = '';
 }
 
+// Fonction CRÉER de nouveaux travaux API***
 async function createGallery(categoryId = null) {
+    // Supprimer la galerie (works)
     deleteOldGallery()
+    // Déterminer quel tableau (works) à utiliser en fonction de la catégorie
     const worksToDisplay = categoryId ? works.filter(work => work.categoryId === categoryId) : works;
+    // Boucle forEach qui sert à parcourir les works
     worksToDisplay.forEach(work => {
+        // Créer un élément <figure> pour chaque work
         const figure = document.createElement("figure");
+        // Créer un élément <image> pour chaque work
         const imageElement = document.createElement("img")
+        // Changer la source de l'image
         imageElement.src = work.imageUrl;
+        // Définir ou mettre à jour l'attribut "alt" de l'élément image HTML
         imageElement.setAttribute("alt", work.title)
+        // Créez un élément <figcaption> pour afficher le titre de work
         const titleImage = document.createElement("figcaption");
+        // Ajouter du texte au titre 
         titleImage.innerText = work.title;
+        // Rattacher les enfants aux parents dans le DOM
         galleryElement.appendChild(figure);
         figure.appendChild(imageElement);
         figure.appendChild(titleImage);
     });
 }
 
+// Ajout de filtres de catégories pour filtrer les works dans la galerie*****
 
 async function createFilter() {
+    // Ajout d'une catégorie par défaut "Tous" au début du tableau
     categories.unshift({ id: 0, name: "Tous" });
+
+    // Création d'un élément <div> pour les catégories
     const portefolio = document.getElementById("portfolio");
     const categoriesElement = document.createElement("div");
     categoriesElement.classList.add("categories");
     portefolio.insertBefore(categoriesElement, galleryElement);
+    // Parcourir chaque catégorie avec la boucle forEach
     categories.forEach((categoryElement, i) => {
+        // Créer des Btn et personaliser avec texte et valeur
         const categoryBtn = document.createElement("button");
         categoryBtn.innerText = categoryElement.name;
         categoryBtn.value = categoryElement.id;
         categoryBtn.classList.add("category-btn");
+
+        // Ajouter la class selected au premier Btn
         if (i === 0) {
             categoryBtn.classList.add("category-selected")
         };
+        // Ajouter Btn à la catégories <div>
         categoriesElement.appendChild(categoryBtn);
+        // Changer de catégorie au click avec l'écouteur d'évenement
         categoryBtn.addEventListener("click", async (e) => {
+            // Obtenir (GET) l'identifiant de la catégorie sélectionnée, convertir un (string) en entier
             const selectedCategoryId = parseInt(e.target.value);
+            // Mettre à jour la galerie
             await createGallery(selectedCategoryId);
+            // Changer la couleur du Btn catégorie séléctionné
             const filterColorCategory = document.querySelectorAll(".category-btn");
             filterColorCategory.forEach((filterColor, i) => {
                 if (i === selectedCategoryId) {
@@ -80,7 +106,7 @@ async function createFilter() {
     });
 }
 
-
+// Récupération des works et catégories
 async function loadData() {
     works = await fetchData("http://localhost:5678/api/works");
     await createGallery();
@@ -90,91 +116,115 @@ async function loadData() {
 
 }
 
+// ***** MODE ADMIN *****
 
 // bandeau noir
-
 function adminMode() {
+    // Vérifier si le token est présent dans le localStorage
     if (localStorage.getItem("token")) {
+        // Créer une <div> edit-mode et l'inserer dans le header
         const editModeBar = `<div class="edit-mode">
         <i class="logo-edit fa-regular fa-pen-to-square"></i>
         <p>Mode édition</p>
         </div>`;
         const header = document.querySelector("header");
         header.style.marginTop = "88px"
-        // header.appendChild(editModeBar);
         header.insertAdjacentHTML("afterbegin", editModeBar)
+        // Remplacer login par logout après identification
         const logout = document.querySelector(".js-alredy-logged")
         const logoutRetourPageAccueil = document.querySelector(".logout-page-accueil")
         logout.textContent = "logout"
         logoutRetourPageAccueil.href = "#"
+        // Supprimez le jeton (token) de session et rechargez la page d'accueil
         logout.addEventListener("click", () => {
             localStorage.removeItem("token")
             location.reload()
         })
+        // Créer un container <div> et lui ajouter une class edit-projets
         const containerDivBtn = document.createElement("div");
         containerDivBtn.classList.add("edit-projets");
-        /**Create the <di> link to edit projects */
+        // Créer le lien <di> pour modifier les projets
         const btnToModified = `<div class="edit">
         <i class="fa-regular fa-pen-to-square"></i>
         <p>modifier</p>
         </div>`;
+
+        // Insérer le conteneur avant le 1er élément de portfolio et déplacer les projets à l'intérieur
         const portfolio = document.getElementById("portfolio");
         portfolio.insertBefore(containerDivBtn, portfolio.firstChild)
         const titleProject = document.querySelector("#portfolio h2")
         containerDivBtn.appendChild(titleProject)
+        // Insérer du code html juste après le edit
         titleProject.insertAdjacentHTML("afterend", btnToModified)
+        // Masquer les boutons de catégories
         const categoryBtn = document.querySelectorAll('.category-btn')
         categoryBtn.forEach(btn => {
             btn.style.display = 'none';
         })
+
+        // Acces à modifier
         const edit = document.querySelector(".edit")
         if (edit) {
+            // Si l'élément est trouvé, ajoutez un écouteur d'événement pour le clic
             edit.addEventListener("click", openModal)
         }
     }
 }
 
-// les Modals
+// Premiere Modal*****
 
-
+// Fonction pour ouvrir la modal
 const openModal = function (e) {
     e.preventDefault()
     ajoutPhoto.style.display = "block"
     bordure.style.display = "block"
-    // MASQUE ICON RETOUR DANS MODAL 1
+    // Masquer et style icon retour dans modal 1
     closeIcon.style.justifyContent = "end"
     returnIcon.style.display = "none"
-
+    // Acces à la modal 1
     modal = document.querySelector(".modal")
+    // Récupérer tous les élements Focusables
     focusables = Array.from(modal.querySelectorAll(focusableSelector))
     focusables[0].focus()
     modal.style.display = null;
+    // Modifier l'attribute d'accessibilité
     modal.removeAttribute('aria-hidden')
     modal.setAttribute('aria-modal', 'true')
+    // Ajout d'un event listener pour fermer la modal
     modal.addEventListener('click', closeModal)
-    // MODIF DE LA CLASS POUR FERMETURE, JUSTE ICONE ET PASA DIV ENTIERE
+    // Modif de la class pour fermeture, juste icon et pas sa <div> entiere
     modal.querySelector('.close-deleted').addEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
+    // Fonction d'appel pour afficher le contenu
     displayWorksModal()
+    // Fonction d'appel pour le modal d'ajout ouvert
     openAddModal()
 }
 
+// Fonction pour fermer la modal*****
+
 const closeModal = function () {
+    // Cacher la modal
     modal.style.display = "none";
+    // Modifier accessibilité attribute
     modal.setAttribute('aria-hidden', 'true')
     modal.setAttribute('aria-modal', 'false')
+    // Supprimer l'event listener
     modal.removeEventListener('click', closeModal)
-    // MODIF DE LA CLASS POUR FERMETURE, JUSTE ICONE ET PASA DIV ENTIERE
+    // Class pour fermeture, juste icon et pas sa div entiere, stop propagation
     modal.querySelector('.close-deleted').removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
+    // Reinitialiser la variable modale a null
     modal = null
 
 }
 
+// Empêcher la modal de se fermer en cliquant dessus
 const stopPropagation = function (e) {
     e.stopPropagation()
 }
 
+// Fonction pour le focus dans la modal a l'utilisation du clavier
 const focusInModal = function (e) {
     e.preventDefault()
     let index = focusables.findIndex(f => f === modal.querySelector(':focus'))
@@ -209,6 +259,7 @@ window.addEventListener('keydown', function (e) {
     }
 })
 
+// Mettre la galerie dans la modal a jour
 function displayWorksModal() {
     const galerieModal = document.querySelector(".galerieModal")
     galerieModal.innerHTML = ""
@@ -227,7 +278,7 @@ function displayWorksModal() {
         trashSelected.addEventListener("click", () => deleteWorksModal(work.id))
     });
 }
-
+// Fonction supprimer photos
 async function deleteWorksModal(id) {
     try {
         const response = await fetch(`http://localhost:5678/api/works/${id}`, {
@@ -259,8 +310,8 @@ loadData();
 
 const openAddModal = function () {
 
-
-    ajoutPhoto.addEventListener("click", () => {
+    ajoutPhoto.addEventListener("click", (e) => {
+        e.preventDefault()
         // APPARITION ICON RETOUR POUR MODAL 2
         returnIcon.style.display = "flex"
         returnAndClose.style.justifyContent = "space-between"
@@ -340,17 +391,24 @@ const openAddModal = function () {
 
         // APPEL DE LA FONCTION POUR POUVOIR METTRE ET CHANGER DE PHOTO
         btnAddFile.addEventListener("change", getNewPhoto);
+        // Recuperer la class Formulaire photo
+        const formPhoto = document.querySelector(".form-photo")
+        // Envoi formulaire photo pour l'envoi sur API, ajout photo
+        formPhoto.addEventListener("submit", (e) => {
+            e.preventDefault();
+            postPhoto();
+            console.log("teste")
+        });
 
+    })
+    // Fleche retour a la premiere modal
+    const returnModal = document.querySelector (".return")
+    returnModal.addEventListener("click", (e) => {
+        openModal(e);
 
     })
 
-    //NE FONCTIONNE PAS A CAUSE DU PREVENT DEFAULT DANS OPENMODAL()
-    // returnAndClose.addEventListener("click", () =>{
-    //     openModal ()
-
-    // })
 }
-
 
 
 //AJOUT DES CATEGORIES
@@ -387,10 +445,84 @@ function getNewPhoto() {
         let newPhoto = document.createElement("img");
         newPhoto.src = URL.createObjectURL(selectedNewPhoto);
         newPhoto.classList.add("new-photo");
-        newPhoto.style.height = "169px";
+        newPhoto.style.maxHeight = "169px";
+        newPhoto.style.maxWidth = "420px"
         previewNewPhoto.appendChild(newPhoto);
         newPhoto.addEventListener("click", () => {
             btnAddFile.click();
+            // container photo , reset photo pour la changer 
+            const preview = document.querySelector(".preview")
+            preview.innerHTML = ""
         });
     }
 };
+
+// Fonction Post photo
+async function postPhoto() {
+
+    try {
+        // Créer Nv formulaire (formData)
+        const formData = new FormData();
+
+        // Recuperer les valeurs du champ de saisie
+        const titleAddModal = document.getElementById("title-photo")
+        const categorieAddModal = document.getElementById("categorie-photo")
+        const btnAddFile = document.getElementById("file")
+        // Tableau swagger Adding values ​​to formData 
+        formData.append("title", titleAddModal.value);
+        formData.append("category", categorieAddModal.value);
+        formData.append("image", btnAddFile.files[0])
+
+        console.log("Données envoyées:", {
+            title: titleAddModal.value,
+            category: categorieAddModal.value,
+            image: btnAddFile.files[0]
+        });
+
+        const response = await fetch(`http://localhost:5678/api/works`, {
+            method: "POST",
+            headers: {
+                "authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: formData
+        });
+
+        if (response.ok) {
+            const data = await response.json()
+            works.push(data)
+            // mettre a jour la galerie
+            createGallery()
+            // Fermer la modal
+            closeModal()
+        } else {
+            throw Error(`${response.status}`)
+        }
+
+    }
+    catch (error) {
+        alert("Erreur : " + error)
+    }
+
+}
+// Fonction pour rediriger l'utilisateur a la page d'accueil qd le token est present
+
+
+
+// function isUserLoggedIn() {
+//     // vérifier si l'utilisateur est connecté.
+//     if (localStorage.getItem("token"))
+//     // retourner true si l'utilisateur est connecté, sinon false.
+//     return true;
+// }
+
+// // Redirige l'utilisateur vers la page d'accueil s'il est connecté
+// function redirectUserIfLoggedIn() {
+//     if (isUserLoggedIn()) {
+//         window.location.href = "./index.html"; // Redirige vers la page d'accueil
+//     }
+// }
+
+// // Appel de la fonction de redirection lorsque la page est chargée
+// document.addEventListener("DOMContentLoaded", function() {
+//     redirectUserIfLoggedIn();
+// });

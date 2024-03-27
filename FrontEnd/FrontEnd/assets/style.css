@@ -478,7 +478,7 @@ input {
 
 .bordure {
 	border: solid 1px #B3B3B3;
-	margin: 140px 80px 40px;
+	margin: 100px 80px 30px;
 }
 
 .ajoutphoto {
@@ -494,6 +494,7 @@ input {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	cursor: pointer;
 }
 .imageModal {
 	width: 76px;
