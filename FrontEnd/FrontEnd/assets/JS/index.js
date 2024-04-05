@@ -1,4 +1,5 @@
-// ***Déclaration des variables globales***
+// ***** Déclaration des variables globales *****
+
 let focusables = []
 let modal = null
 const galleryElement = document.querySelector(".gallery")
@@ -28,12 +29,14 @@ async function fetchData(url) {
     }
 }
 
-// Fonction SUPPRIMER les anciennes images HTML***
+// Fonction SUPPRIMER les anciennes images HTML ******
+
 function deleteOldGallery() {
     document.querySelector(".gallery").innerHTML = '';
 }
 
-// Fonction CRÉER de nouveaux travaux API***
+// Fonction CRÉER de nouveaux travaux API ******
+
 async function createGallery(categoryId = null) {
     // Supprimer la galerie (works)
     deleteOldGallery()
@@ -60,7 +63,8 @@ async function createGallery(categoryId = null) {
     });
 }
 
-// Ajout de filtres de catégories pour filtrer les works dans la galerie*****
+
+// Ajout de filtres de catégories pour filtrer les works dans la galerie ******
 
 async function createFilter() {
     // Ajout d'une catégorie par défaut "Tous" au début du tableau
@@ -106,7 +110,9 @@ async function createFilter() {
     });
 }
 
-// Récupération des works et catégories
+
+// Récupération des works et catégories******
+
 async function loadData() {
     works = await fetchData("http://localhost:5678/api/works");
     await createGallery();
@@ -116,9 +122,10 @@ async function loadData() {
 
 }
 
-// ***** MODE ADMIN *****
+// ******* MODE ADMIN *******
 
-// bandeau noir
+// bandeau noir******
+
 function adminMode() {
     // Vérifier si le token est présent dans le localStorage
     if (localStorage.getItem("token")) {
@@ -171,9 +178,12 @@ function adminMode() {
     }
 }
 
-// Premiere Modal*****
 
-// Fonction pour ouvrir la modal
+
+// ***** PREMIERE MODAL *****
+
+// Fonction pour ouvrir la modal ******
+
 const openModal = function (e) {
     e.preventDefault()
     ajoutPhoto.style.display = "block"
@@ -201,7 +211,7 @@ const openModal = function (e) {
     openAddModal()
 }
 
-// Fonction pour fermer la modal*****
+// Fonction pour fermer la modal ******
 
 const closeModal = function () {
     // Cacher la modal
@@ -219,12 +229,15 @@ const closeModal = function () {
 
 }
 
-// Empêcher la modal de se fermer en cliquant dessus
+
+// Empêcher la modal de se fermer en cliquant dessus ******
+
 const stopPropagation = function (e) {
     e.stopPropagation()
 }
 
-// Fonction pour le focus dans la modal a l'utilisation du clavier
+// Fonction pour le focus dans la modal a l'utilisation du clavier******
+
 const focusInModal = function (e) {
     e.preventDefault()
     let index = focusables.findIndex(f => f === modal.querySelector(':focus'))
@@ -248,7 +261,7 @@ document.querySelectorAll(".js-modal").forEach(a => {
 
 })
 
-// supporter le fonctionnement du clavier
+// supporter le fonctionnement du clavier ******
 
 window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.key === 'Esc') {
@@ -259,7 +272,8 @@ window.addEventListener('keydown', function (e) {
     }
 })
 
-// Mettre la galerie dans la modal a jour
+// Mettre a jour la galerie dans la modal ******
+
 function displayWorksModal() {
     const galerieModal = document.querySelector(".galerieModal")
     galerieModal.innerHTML = ""
@@ -278,7 +292,10 @@ function displayWorksModal() {
         trashSelected.addEventListener("click", () => deleteWorksModal(work.id))
     });
 }
-// Fonction supprimer photos
+
+
+// Fonction supprimer photos ******
+
 async function deleteWorksModal(id) {
     try {
         const response = await fetch(`http://localhost:5678/api/works/${id}`, {
@@ -306,7 +323,9 @@ async function deleteWorksModal(id) {
 loadData();
 
 
-// créer une modal ajout photos
+// *** DEUXIEME MODAL ***
+
+// Créer une modal ajout photos ******
 
 const openAddModal = function () {
 
@@ -402,7 +421,7 @@ const openAddModal = function () {
 
     })
     // Fleche retour a la premiere modal
-    const returnModal = document.querySelector (".return")
+    const returnModal = document.querySelector(".return")
     returnModal.addEventListener("click", (e) => {
         openModal(e);
 
@@ -411,7 +430,8 @@ const openAddModal = function () {
 }
 
 
-//AJOUT DES CATEGORIES
+//Ajout des categories ******
+
 function addSelectedCategories() {
     categories.shift();
     const categorieAddModal = document.getElementById("categorie-photo")
@@ -457,7 +477,9 @@ function getNewPhoto() {
     }
 };
 
-// Fonction Post photo
+
+// Fonction Post photo ******
+
 async function postPhoto() {
 
     try {
@@ -478,7 +500,7 @@ async function postPhoto() {
             category: categorieAddModal.value,
             image: btnAddFile.files[0]
         });
-
+        // méthode fetch POST new photo
         const response = await fetch(`http://localhost:5678/api/works`, {
             method: "POST",
             headers: {
@@ -504,16 +526,15 @@ async function postPhoto() {
     }
 
 }
+
 // Fonction pour rediriger l'utilisateur a la page d'accueil qd le token est present
 
-
-
-// function isUserLoggedIn() {
-//     // vérifier si l'utilisateur est connecté.
-//     if (localStorage.getItem("token"))
-//     // retourner true si l'utilisateur est connecté, sinon false.
-//     return true;
-// }
+function isUserLoggedIn() {
+    // vérifier si l'utilisateur est connecté.
+    // retourner true si l'utilisateur est connecté, sinon false.
+    // return true;
+}
+isUserLoggedIn()
 
 // // Redirige l'utilisateur vers la page d'accueil s'il est connecté
 // function redirectUserIfLoggedIn() {
