@@ -276,25 +276,31 @@ window.addEventListener('keydown', function (e) {
 
 function displayWorksModal() {
     const galerieModal = document.querySelector(".galerieModal")
+    // Reset existing content
     galerieModal.innerHTML = ""
+    // Parcourir chaque œuvre pour les afficher dans la modal
     works.forEach(work => {
+        // Creation d'elements
         const figureModal = document.createElement("figure");
         figureModal.setAttribute("class", "figureModal")
         figureModal.setAttribute("id", `modal-${work.id}`)
         const imageModal = document.createElement("img")
         imageModal.src = work.imageUrl;
         imageModal.setAttribute("class", "imageModal")
+        // Ajout d'elements
         galerieModal.appendChild(figureModal);
         figureModal.appendChild(imageModal);
+        // Ajout icône de corbeille avec l'id de travail
         const corbeille = `<i class="fa-solid fa-trash-can" id ="trash-${work.id}"></i>`
         figureModal.insertAdjacentHTML("afterbegin", corbeille)
+        // Ajout event listener pour supprimer le work au click
         const trashSelected = document.getElementById(`trash-${work.id}`)
         trashSelected.addEventListener("click", () => deleteWorksModal(work.id))
     });
 }
 
 
-// Fonction supprimer photos ******
+// Fonction supprimer photos (work) ******
 
 async function deleteWorksModal(id) {
     try {
@@ -323,7 +329,7 @@ async function deleteWorksModal(id) {
 loadData();
 
 
-// *** DEUXIEME MODAL ***
+// *** DEUXIEME MODAL Add work ***
 
 // Créer une modal ajout photos ******
 
@@ -331,7 +337,7 @@ const openAddModal = function () {
 
     ajoutPhoto.addEventListener("click", (e) => {
         e.preventDefault()
-        // APPARITION ICON RETOUR POUR MODAL 2
+        // Apparition icon retour pour MODAL 2
         returnIcon.style.display = "flex"
         returnAndClose.style.justifyContent = "space-between"
         modalUn.textContent = 'Ajout photo'
