@@ -224,7 +224,7 @@ li:hover {
 	margin-bottom: 1em;
 }
 
-.gallery {
+.gallerie {
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
@@ -232,8 +232,10 @@ li:hover {
 	grid-row-gap: 20px;
 }
 
-.gallery img {
+.gallerie img {
 	width: 100%;
+	height: 390px;
+	object-fit: cover;
 
 }
 
@@ -293,7 +295,7 @@ footer nav ul {
 
 /* boutons de catégories */
 
-.category-btn {
+.btn-filtres {
 	border: 1px solid #1D6154;
 	border-radius: 30px;
 	background-color: aliceblue;
@@ -310,7 +312,7 @@ footer nav ul {
 	gap: 15px;
 }
 
-.category-selected {
+.btn-selectionne {
 	background-color: #1D6154;
 	color: aliceblue;
 }
@@ -323,7 +325,7 @@ footer nav ul {
 	padding-left: 15px;
 }
 
-.edit-mode {
+.bar-edition {
 	background-color: black;
 	color: white;
 	display: flex;
@@ -349,7 +351,7 @@ footer nav ul {
 	height: 30px;
 }
 
-.edit {
+.btn-modifier {
 	display: flex;
 	align-items: center;
 	color: black;
@@ -496,7 +498,7 @@ input {
 	align-items: center;
 	cursor: pointer;
 }
-.imageModal {
+.elementImage {
 	width: 76px;
 	height: 102px;
 }
@@ -584,7 +586,7 @@ input {
 	justify-content: end;
 
 }
-.return {
+.retour {
 	margin-top: 26px;
 	margin-left: 30px;
 	font-size: 24px;
@@ -597,7 +599,7 @@ input {
 	margin: 0 105px;
 }
 
-.add-new-photo {
+.add-nvl-photo {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -608,7 +610,7 @@ input {
 	margin-bottom: 9px;
 }
 
-.content-add-photo {
+.div-ajout-photo {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -672,3 +674,7 @@ input {
 	margin-bottom: 45px;
 }
 
+.nvl-photo {
+	max-width: 420px;
+	max-height: 169px;
+}

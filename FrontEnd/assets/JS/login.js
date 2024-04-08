@@ -1,4 +1,5 @@
 // Récupération des élements du formulaire***
+
 const email = document.getElementById("email");
 const password = document.getElementById("password");
 const submit = document.getElementById("submit");
@@ -6,11 +7,12 @@ const form = document.querySelector(".login-form");
 const errorMail = document.querySelector(".loginEmail-error")
 const errorPassword = document.querySelector(".loginMdp-error")
 
-// Envoi des données form pour vérification***
+// ENVOI DE DONNEES FORMULAIRE POUR VERIFICATION ***
+
 form.addEventListener("submit", async (e) => {
     // Prévenir le comportement par defaut du submit pour pouvoir le gérer
     e.preventDefault();
-    // Récupérer et stocker la valeur utilisateur du mail et MDP
+    // Récupérer et stocker la valeur du mail et MDP saisie par l'utilisateur
     const user = {
         email: email.value,
         password: password.value,
@@ -33,7 +35,7 @@ form.addEventListener("submit", async (e) => {
         }
 
     }
-    // Gestion des erreurs en fonction de l'état de la réponse***
+    // GESTION DES ERREURS ***
     catch (error) {
         // Si 401, afficher erreur mot de passe
         if (error.message === "401") {
