@@ -349,6 +349,7 @@ footer nav ul {
 	justify-content: center;
 	gap: 30px;
 	height: 30px;
+	flex-direction: row-reverse;
 }
 
 .btn-modifier {
