@@ -30,15 +30,10 @@ form.addEventListener("submit", async (e) => {
 
     }
     catch (error) {
-        // Si 401, afficher erreur mot de passe
         if (error.message === "401" || error.message === "404") {
             errorPassword.style.display = "block";
             errorMail.style.display = "none";
-            //    Sinon si 404, afficher erreur mail
-        // } else if (error.message === "404") {
-        //     errorMail.style.display = "block";
-        //     errorPassword.style.display = "none";
-            // Sinon, afficher erreur avec son code
+
         } else {
             alert("Erreur : " + error)
         }

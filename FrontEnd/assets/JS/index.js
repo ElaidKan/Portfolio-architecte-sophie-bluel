@@ -1,24 +1,8 @@
-import { fetchData } from './service.js';
-// import { chargementDonnees } from './service.js';
-
-// let works = await fetchData("http://localhost:5678/api/works");
-// await creategallerie();
-// let categories = await fetchData("http://localhost:5678/api/categories");
-// await creerFiltre();
-// await modeAdmin();
-
-// RECUPERATION DES WORKS ET CATEGORIES ******
-export async function chargementDonnees() {
-    works = await fetchData("http://localhost:5678/api/works");
-    await creategallerie();
-    categories = await fetchData("http://localhost:5678/api/categories");
-    await creerFiltre();
-    await modeAdmin();
-
-}
+import { envoiPhoto, deleteWork, fetchData, fetchWorks } from './service.js';
 
 
 // ***** DECLARATION DES VARIABLES GLOBALES *****
+
 let works;
 let categories;
 const gallerieElement = document.querySelector(".gallerie")
@@ -36,14 +20,37 @@ const modalDeux = document.querySelector(".modal-deux")
 let focusables = []
 let modal = null
 
-// FONCTION SUPPRIMER L ANCIENNE (GALERIE) ******
 
+/**
+ * Une fonction qui charge les travaux, crée une galerie,
+ *  récupère les catégories, crée un filtre et définit le mode administrateur.
+ * @return {Promise<void>} Une promesse qui se résout lorsque le chargement des données et la création de la galerie sont terminés.
+ */
+
+export async function chargementDonnees() {
+    works = await fetchWorks();
+    await creategallerie();
+    categories = await fetchData("http://localhost:5678/api/categories");
+    await creerFiltre();
+    await modeAdmin();
+
+}
+
+/**
+ * Fonction pour effacer le HTML interne de l'élément avec la classe "gallerie".
+*/
 function suppressionGallerie() {
     document.querySelector(".gallerie").innerHTML = '';
 }
 
-// FONCTION CRÉER DE NV TRAVAUX API ******
-
+/**
+ * Crée de manière asynchrone une galerie d'œuvres basée sur un identifiant de catégorie donné. 
+ * Si aucun identifiant de catégorie n'est fourni,
+ * toutes les œuvres sont exposées. Chaque œuvre est représentée par un élément figure contenant un élément image et
+ * un élément légende avec le titre de l'œuvre. La galerie est annexée à la galerieElement.
+ * @param {number|null}categoryId - L'ID de la catégorie à filtrer. Si nul, toutes les œuvres sont affichées.
+ * @return {Promise<void>} Une promesse qui se résout lorsque la galerie a été créée.
+ */
 async function creategallerie(categoryId = null) {
     suppressionGallerie()
     const worksToDisplay = categoryId ? works.filter(work => work.categoryId === categoryId) : works;
@@ -60,9 +67,9 @@ async function creategallerie(categoryId = null) {
     });
 }
 
-
-// AJOUT DE FILTRES DE CATEGORIES POUR FILTRER LES WORKS DANS LA GALERIE ******
-
+/**
+ * Fonction pour créer un filtre pour les catégories du portfolio
+ */
 async function creerFiltre() {
     categories.unshift({ id: 0, name: "Tous" });
     const portefolio = document.getElementById("portfolio");
@@ -100,7 +107,11 @@ async function creerFiltre() {
 
 // ******* MODE ADMIN *******
 
-// BANDEAU NOIR 
+/**
+ * Une fonction qui crée un élément de barre noire avec une icône et du texte en mode édition,
+ * l'ajoute à l'élément d'en-tête et ajuste la marge supérieure de l'en-tête.
+ */
+
 function bandeauNoir() {
     const barEdition = document.createElement("div")
     barEdition.classList.add("bar-edition")
@@ -114,7 +125,9 @@ function bandeauNoir() {
     header.appendChild(barEdition)
 }
 
-// Logout***
+/**
+ * Déconnecte l'utilisateur en supprimant le jeton de localStorage et en rechargeant la page.
+ */
 function logout() {
     const logout = document.querySelector(".deconnexion")
     const lienLogin = document.querySelector(".lien-page-login")
@@ -126,7 +139,9 @@ function logout() {
     })
 }
 
-// Bouton Modifier ***
+/**
+ * Fonction pour créer un bouton pour ouvrir un modal pour éditer des projets.
+ */
 function boutonOuvreModal() {
     const containerDivBtn = document.createElement("div");
     containerDivBtn.classList.add("edit-projets");
@@ -165,7 +180,9 @@ function modeAdmin() {
 
 // ***** PREMIERE MODAL
 
-// FONCTION POUR OUVRIR LA MODAL ******
+/**
+* Fonction pour ouvrir un modal avec des éléments et des comportements spécifiques.
+*/
 
 const openModal = function (e) {
     e.preventDefault()
@@ -188,7 +205,9 @@ const openModal = function (e) {
     modalAjoutPhoto()
 }
 
-// FONCTION POUR FERMER LA MODAL ******
+/**
+ * Fonction pour fermer le modal en le masquant et en supprimant les écouteurs d'événements.
+ */
 
 const closeModal = function () {
     modal.style.display = "none";
@@ -201,14 +220,16 @@ const closeModal = function () {
 }
 
 
-// EMPECHER LA MODAL DE SE FERMER EN CLIQUANT DESSUS ******
-
+/**
+ * Empêche l'événement de se propager.
+ */
 const stopPropagation = function (e) {
     e.stopPropagation()
 }
 
-// METTRE A JOUR ( AFFICHER) LA GALERIE DANS LA MODAL ******
-
+/**
+ * Met à jour le modal avec de nouveaux travaux basés sur le tableau « works ».
+*/
 function miseAJourModal() {
     const galerieModal = document.querySelector(".galerieModal")
     // Reset existing content
@@ -229,18 +250,14 @@ function miseAJourModal() {
     });
 }
 
-// FONCTION SUPPRIMER PHOTO (work), CORBEILLE ******
+/**
+ * Supprime une œuvre à l'aide de l'identifiant fourni, 
+ * met à jour la liste des œuvres et actualise le modal et la galerie en conséquence.
+ */
 
 async function supprimerTravauxModal(id) {
     try {
-        const response = await fetch(`http://localhost:5678/api/works/${id}`, {
-            method: "DELETE",
-            headers: {
-                "content-type": "application/json",
-                "authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: null
-        });
+        const response = await deleteWork(id);
         if (response.ok) {
             works = works.filter(work => work.id !== id)
             miseAJourModal()
@@ -259,8 +276,9 @@ chargementDonnees();
 
 // *** DEUXIEME MODAL Add work 
 
-// CREER UNE MODAL AJOUT PHOTOS ******
-
+/**
+ * Fonction de gestion de l'ajout d'une nouvelle photo dans un modal.
+ */
 const modalAjoutPhoto = function () {
 
     ajoutPhoto.addEventListener("click", (e) => {
@@ -413,8 +431,10 @@ const modalAjoutPhoto = function () {
 
 }
 
-// FORMULAIRE RECUPERE NOUVELLE PHOTO SUR L ORDI ****** 
-
+/**
+ * Récupère une nouvelle photo de la saisie utilisateur, valide sa taille et son format,
+ * et l'affiche dans la section aperçu.
+*/
 function getNewPhoto() {
     const btnAjoutPhoto = document.getElementById("file")
     const containerAjoutPhoto = document.querySelector(".div-ajout-photo")
@@ -440,26 +460,12 @@ function getNewPhoto() {
     }
 };
 
-// FOCTION POST PHOTO ******
-
+/**
++ * Fonction pour poster une photo sur le serveur.
+*/
 async function postPhoto() {
     try {
-        const nvlDonnee = new FormData();
-        const titreNvlPhoto = document.getElementById("title-photo")
-        const categorieNvlPhoto = document.getElementById("categorie-photo")
-        const btnAjoutPhoto = document.getElementById("file")
-        nvlDonnee.append("title", titreNvlPhoto.value);
-        nvlDonnee.append("category", categorieNvlPhoto.value);
-        nvlDonnee.append("image", btnAjoutPhoto.files[0])
-
-        const response = await fetch(`http://localhost:5678/api/works`, {
-            method: "POST",
-            headers: {
-                "authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: nvlDonnee
-        });
-
+        const response = await envoiPhoto()
         if (response.ok) {
             const data = await response.json()
             works.push(data)
